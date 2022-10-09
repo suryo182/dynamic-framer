@@ -2,11 +2,29 @@ import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 
 function App() {
+  const ghostRefY = useRef();
+  const [transformY, setTransformY] = useState(0);
+  const [viewportH, setViewportH] = useState(0);
   const { scrollYProgress } = useScroll();
 
+  const onResize = useCallback((entries) => {
+    for (let entry of entries) {
+      setViewportH(entry.contentRect.height);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => onResize(entries));
+    resizeObserver.observe(ghostRefY.current);
+    return () => resizeObserver.disconnect();
+  }, [onResize]);
+
   return (
-    <div>
-      <motion.div className="p-8 h-max flex flex-col gap-y-4">
+    <div ref={ghostRefY} className="h-screen">
+      <motion.div
+        style={{ y: transformY }}
+        className="p-8 h-max flex flex-col gap-y-4"
+      >
         <div className="bg-red-500 h-36">Red</div>
         <div className="bg-green-500 h-36">Green</div>
         <div className="bg-blue-500 h-36">Blue</div>
@@ -14,12 +32,12 @@ function App() {
         <div className="bg-orange-500 h-36">Orange</div>
         <div className="bg-pink-500 h-36">Pink</div>
       </motion.div>
-      <Nav scrollYProgress={scrollYProgress} />
+      <Nav scrollYProgress={scrollYProgress} setTransformY={setTransformY} />
     </div>
   );
 }
 
-const Nav = ({ scrollYProgress }) => {
+const Nav = ({ scrollYProgress, setTransformY }) => {
   const ghostRef = useRef();
   const scrollRef = useRef();
   const [scrollRange, setScrollRange] = useState(0);
@@ -55,10 +73,11 @@ const Nav = ({ scrollYProgress }) => {
     >
       <motion.div
         drag="x"
-        onDrag={(event, pan) => {
-          console.log(spring);
-        }}
         style={{ x: spring }}
+        onDrag={(event, pan) => {
+          event.preventDefault();
+          setTransformY(pan.offset.x);
+        }}
         dragConstraints={scrollRef}
         className="flex gap-x-1 w-max px-4"
       >

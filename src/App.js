@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 
 function App() {
@@ -11,14 +6,14 @@ function App() {
 
   return (
     <div>
-      <div className="p-8 flex flex-col gap-y-4">
-        <Item name="Red" color="red" />
-        <Item name="Green" color="green" />
-        <Item name="Blue" color="blue" />
-        <Item name="Yellow" color="yellow" />
-        <Item name="Orange" color="orange" />
-        <Item name="Pink" color="pink" />
-      </div>
+      <motion.div className="p-8 h-max flex flex-col gap-y-4">
+        <div className="bg-red-500 h-36">Red</div>
+        <div className="bg-green-500 h-36">Green</div>
+        <div className="bg-blue-500 h-36">Blue</div>
+        <div className="bg-yellow-500 h-36">Yellow</div>
+        <div className="bg-orange-500 h-36">Orange</div>
+        <div className="bg-pink-500 h-36">Pink</div>
+      </motion.div>
       <Nav scrollYProgress={scrollYProgress} />
     </div>
   );
@@ -56,7 +51,7 @@ const Nav = ({ scrollYProgress }) => {
   return (
     <motion.div
       ref={scrollRef}
-      className="fixed bottom-4 w-[80%] transform -translate-x-1/2 left-1/2 h-max rounded-2xl bg-green-200 cursor-pointer overflow-x-scroll"
+      className="fixed bottom-4 w-[80%] transform -translate-x-1/2 left-1/2 h-max rounded-2xl bg-green-200 cursor-pointer overflow-x-hidden"
     >
       <motion.div
         drag="x"
@@ -67,24 +62,16 @@ const Nav = ({ scrollYProgress }) => {
         dragConstraints={scrollRef}
         className="flex gap-x-1 w-max px-4"
       >
-        <ItemNav name="Red" color="red" />
-        <ItemNav name="Green" color="green" />
-        <ItemNav name="Blue" color="blue" />
-        <ItemNav name="Yellow" color="yellow" />
-        <ItemNav name="Orange" color="orange" />
-        <ItemNav name="Pink" color="pink" />
+        <div className="text-red-500 py-1 px-2 h-max">Red</div>
+        <div className="text-green-500 py-1 px-2 h-max">Green</div>
+        <div className="text-blue-500 py-1 px-2 h-max">Blue</div>
+        <div className="text-yellow-500 py-1 px-2 h-max">Yellow</div>
+        <div className="text-orange-500 py-1 px-2 h-max">Orange</div>
+        <div className="text-pink-500 py-1 px-2 h-max">Pink</div>
       </motion.div>
       <div ref={ghostRef} className="w-full" />
     </motion.div>
   );
-};
-
-const Item = ({ name, color }) => {
-  return <div className={`bg-${color}-500 h-36`}>{name}</div>;
-};
-
-const ItemNav = ({ name, color }) => {
-  return <div className={`text-${color}-500 py-1 px-2 h-max`}>{name}</div>;
 };
 
 export default App;
